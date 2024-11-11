@@ -65,6 +65,46 @@ declare "kubernetes" {
       replacement = "kubernetes"
       target_label = "source"
     }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_controller_name"]
+      regex         = "([0-9a-z-.]+?)(-[0-9a-f]{8,10})?"
+      target_label  = "__tmp_controller_name"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name", "__meta_kubernetes_pod_label_app", "__tmp_controller_name", "__meta_kubernetes_pod_name"]
+      regex         = "^;*([^;]+)(;.*)?$"
+      target_label  = "app"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance", "__meta_kubernetes_pod_label_instance"]
+      regex         = "^;*([^;]+)(;.*)?$"
+      target_label  = "instance"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component", "__meta_kubernetes_pod_label_component"]
+      regex         = "^;*([^;]+)(;.*)?$"
+      target_label  = "component"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_node_name"]
+      target_label  = "node"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_name"]
+      target_label  = "pod"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      target_label  = "namespace"
+    }
+
   }
 
   export "output" {
